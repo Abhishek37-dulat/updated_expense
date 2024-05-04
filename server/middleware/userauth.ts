@@ -18,10 +18,11 @@ class AuthMiddleWare {
         token,
         process.env.TOKEN_SECRET as Secret
       );
+
       if (
         !verifiedToken ||
         typeof verifiedToken === "string" ||
-        typeof verifiedToken === "object"
+        typeof verifiedToken !== "object"
       ) {
         throw new Error("Invalid token");
       }

@@ -6,7 +6,6 @@ interface OrderAttributes {
   paymentId: string;
   orderId: string;
   status: string;
-  userId: number;
 }
 
 class Order extends Model<OrderAttributes> implements OrderAttributes {
@@ -14,7 +13,6 @@ class Order extends Model<OrderAttributes> implements OrderAttributes {
   public paymentId!: string;
   public orderId!: string;
   public status!: string;
-  public userId!: number;
 }
 
 Order.init(
@@ -33,9 +31,6 @@ Order.init(
     },
     status: {
       type: DataTypes.STRING,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
     },
   },
   {

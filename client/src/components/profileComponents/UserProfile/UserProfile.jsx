@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { styled, Box, Typography, IconButton } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import PImage from "../../../assets/images/hairProfile.jpg";
 import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
+import { useDispatch } from "react-redux";
+import {
+  updateAuthLoading,
+  userPremium,
+} from "../../../redux/reducers/ducks/MainDuck";
 
 const MainBox = styled(Box)(({ theme }) => ({
   //   border: "1px solid black",
@@ -191,21 +196,50 @@ const ProfileBox = styled(Box)(({ theme }) => ({
 
 const UserProfile = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [income, setIncome] = useState("");
   const emm = "Abhishek11906997dulat@gmail.com";
   const [incomeChange, setIncomeChange] = useState(false);
   const [premiumUser, setPremiumUser] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+
   const handleIncomeChange = () => {
-    setIncomeChange(false);
+    toast.info("currently not available!");
+    // setIncomeChange(false);
+    // setIncomeChange(!incomeChange);
   };
   const handleAnalysis = () => {
     navigate("/profile/analysis");
   };
-  const handleLogout = () => {};
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    navigate("/login");
+  };
+  const handleUnsubscribe = () => {};
+
+  const handleSubscribe = () => {
+    const token = localStorage.getItem("access_token");
+    console.log(token);
+    dispatch(updateAuthLoading(true));
+    dispatch(userPremium(token));
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      navigate("/login");
+    } else {
+      const [header, payload, signature] = token.split(".");
+      const decodedPayload = JSON.parse(atob(payload));
+      setProfileData(decodedPayload);
+    }
+  }, []);
+
+  console.log(profileData);
   return (
     <MainBox>
       <TopNav>
-        <IconButton>
+        <IconButton onClick={() => navigate(-1)}>
           <ArrowBackRoundedIcon sx={{ color: "#fff" }} />
         </IconButton>
       </TopNav>
@@ -218,16 +252,25 @@ const UserProfile = () => {
           <Box>
             <Box>
               <img src={PImage} alt="pimage" />
-              {premiumUser && <Typography>👑</Typography>}
+              {profileData !== null && profileData?.isPremium && (
+                <Typography>👑</Typography>
+              )}
             </Box>
             <Box>
               <Typography>
-                Name: <Typography>Abhishek</Typography>
+                Name:{" "}
+                <Typography>
+                  {profileData !== null && profileData?.name}
+                </Typography>
               </Typography>
               <Typography>
                 Email:{" "}
                 <Typography>
-                  {emm.length < 10 ? emm : emm.slice(0, 10) + "..."}
+                  {profileData !== null
+                    ? profileData?.email.length < 10
+                      ? profileData?.email
+                      : profileData?.email.slice(0, 10) + "..."
+                    : ""}
                 </Typography>
               </Typography>
               <Box>
@@ -241,7 +284,7 @@ const UserProfile = () => {
                     disabled={!incomeChange}
                   />
                   {!incomeChange ? (
-                    <button onClick={() => setIncomeChange(true)}>Edit</button>
+                    <button onClick={() => handleIncomeChange()}>Edit</button>
                   ) : (
                     <button
                       style={{ backgroundColor: "#66BF46" }}
@@ -250,42 +293,47 @@ const UserProfile = () => {
                       Save
                     </button>
                   )}
-                  <Typography>💲254.33</Typography>
+                  <Typography>💲00.00</Typography>
                 </Typography>
                 <Typography>
-                  Total Expense: <Typography>💲254.33</Typography>
+                  Total Expense:{" "}
+                  <Typography>
+                    💲{profileData !== null ? profileData?.totalCost : 0}
+                  </Typography>
                 </Typography>
               </Box>
-              {!premiumUser ? (
-                <button
-                  style={{
-                    backgroundColor: "#9FA4A8",
-                    color: "#fff",
-                    marginTop: "20px",
-                  }}
-                  onClick={() => handleLogout(true)}
-                >
-                  <Typography>UnSubscribe</Typography>
-                </button>
-              ) : (
-                <button
-                  style={{
-                    backgroundColor: "#010101",
-                    color: "#fff",
-                    marginTop: "20px",
-                  }}
-                  onClick={() => handleLogout(true)}
-                >
-                  <Typography>Subscribe now 👑</Typography>
-                </button>
-              )}
+              {profileData !== null ? (
+                profileData?.isPremium ? (
+                  <button
+                    style={{
+                      backgroundColor: "#9FA4A8",
+                      color: "#fff",
+                      marginTop: "20px",
+                    }}
+                    onClick={() => handleUnsubscribe()}
+                  >
+                    <Typography>UnSubscribe</Typography>
+                  </button>
+                ) : (
+                  <button
+                    style={{
+                      backgroundColor: "#010101",
+                      color: "#fff",
+                      marginTop: "20px",
+                    }}
+                    onClick={() => handleSubscribe()}
+                  >
+                    <Typography>Subscribe now 👑</Typography>
+                  </button>
+                )
+              ) : null}
               <button
                 style={{
                   backgroundColor: "#010101",
                   color: "#fff",
                   marginTop: "20px",
                 }}
-                onClick={() => handleLogout(true)}
+                onClick={() => handleAnalysis()}
               >
                 <Typography
                   style={{
@@ -293,7 +341,6 @@ const UserProfile = () => {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  onClick={() => handleAnalysis()}
                 >
                   Analysis <InsightsRoundedIcon />
                 </Typography>
@@ -304,7 +351,7 @@ const UserProfile = () => {
                   color: "#445760",
                   marginTop: "20px",
                 }}
-                onClick={() => handleLogout(true)}
+                onClick={() => handleLogout()}
               >
                 <Typography> Logout</Typography>
               </button>

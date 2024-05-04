@@ -5,6 +5,7 @@ import ChangePassword from "../components/userComponents/ChangePassword";
 import UserProfile from "../components/profileComponents/UserProfile";
 import UserAnylics from "../components/profileComponents/UserAnylics";
 import ExpenseBox from "../components/ExpenseLayout";
+import UserVerify from "../components/userComponents/UserVerify";
 const userRoutes = [
   {
     path: "/login",
@@ -13,6 +14,10 @@ const userRoutes = [
   {
     path: "/signup",
     component: UserSignup,
+  },
+  {
+    path: "/user/verify/:id",
+    component: UserVerify,
   },
   {
     path: "/forgotpassword",

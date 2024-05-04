@@ -20,6 +20,7 @@ class PaymentController {
     next: NextFunction
   ): Promise<void> {
     try {
+      console.log(req.user);
       let rzp: any = new Razorpay({
         key_id: process.env.RAZORPAY_KEY_ID!,
         key_secret: process.env.RAZORPAY_KEY_SECRET!,
@@ -31,6 +32,7 @@ class PaymentController {
           if (err) {
             throw new Error(JSON.stringify(err));
           }
+
           const orderdata = await req.user.createOrder({
             orderId: order.id,
             status: "PENDING",

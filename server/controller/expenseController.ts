@@ -8,7 +8,7 @@ interface ExpenseData {
   itemName: string;
   categorie: string;
   amount: number;
-  userId: number;
+  UserId: number;
 }
 
 interface UserData {
@@ -29,7 +29,7 @@ class ExpenseController {
   ): Promise<void> {
     try {
       const Expenses = await Expense.findAll({
-        where: { userId: req.user.id },
+        where: { UserId: req.user.id },
       });
       res.status(200).json({ message: "User Expensives!", data: Expenses });
     } catch (error) {
@@ -75,7 +75,7 @@ class ExpenseController {
           itemName,
           categorie,
           amount,
-          userId: req.user.id,
+          UserId: req.user.id,
         } as ExpenseData,
         { transaction: t }
       );
@@ -134,7 +134,7 @@ class ExpenseController {
           itemName,
           categorie,
           amount,
-          userId: req.user.id,
+          UserId: req.user.id,
         } as ExpenseData,
         { transaction: t }
       );

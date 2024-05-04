@@ -17,7 +17,7 @@ const index = () => {
           />
         );
       })}
-      <Route path="*" element={<Missing />} />
+      <Route path="*" element={<Navigate to={"/login"} replace />} />
     </Routes>
   );
 };

@@ -41,7 +41,7 @@ const Index = () => {
           />
         );
       })}
-      <Route path="*" element={<Missing />} />
+      <Route path="*" element={<Navigate to={"/expense"} replace />} />
     </Routes>
   );
 };

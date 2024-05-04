@@ -57,7 +57,7 @@ class UserController {
         sender,
         to: receivers,
         subject: "Verify Userself",
-        htmlContent: `<p>Verify yourself: <a href="C:\Users\Abhishek Dulat\Downloads\sharpner_exp\client\index.html">Verify yourself</a></p>`,
+        htmlContent: `<p>Verify yourself: <a href="-http://localhost:3000/user/verify/:${newUser.id}">Verify yourself</a></p>`,
       });
 
       res
@@ -97,12 +97,13 @@ class UserController {
           id: user.id,
           isPremium: user.isPremium,
           isVerified: user.isVerified,
+          totalCost: user.totalCost,
+          email: user.email,
         },
         process.env.TOKEN_SECRET as string
       );
       res.status(201).json({ message: "Login Successful", data: token });
     } catch (error) {
-      console.log(req.body);
       console.error("Error while signing in: ", error);
       res.status(500).json({ error: "Server error" });
     }
@@ -113,6 +114,7 @@ class UserController {
     next: NextFunction
   ): Promise<void> {
     try {
+      console.log("PARAMS::: ", req.params.id);
       const userExist = await User.findByPk(req.params.id);
       if (!userExist) {
         res.status(403).json({ message: "User don't exist" });

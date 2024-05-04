@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { styled, Box, Typography, IconButton, Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { PieChart } from "@mui/x-charts/PieChart";
@@ -85,6 +85,7 @@ const ProfileBox = styled(Box)(({ theme }) => ({
 }));
 
 const UserAnylics = () => {
+  const navigate = useNavigate();
   const data = [
     { label: "Income", value: 500 },
     { label: "Expense", value: 30 },
@@ -92,7 +93,7 @@ const UserAnylics = () => {
   return (
     <MainBox>
       <TopNav>
-        <IconButton>
+        <IconButton onClick={() => navigate(-1)}>
           <ArrowBackRoundedIcon sx={{ color: "#fff" }} />
         </IconButton>
       </TopNav>

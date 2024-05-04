@@ -6,9 +6,14 @@ import user from "./routes/userRoute";
 import payment from "./routes/paymentRoute";
 import leaderBoard from "./routes/leaderBoardRoute";
 import dotenv from "dotenv";
-
+import morgan from "morgan";
+import compression from "compression";
+import helmet from "helmet";
+import * as fs from "fs";
+import path from "path";
 class App {
   private app: Express;
+  private accessLogStream: fs.WriteStream;
 
   constructor() {
     this.app = express();
@@ -22,6 +27,9 @@ class App {
     this.app.use(cors());
     this.app.use(express.urlencoded({ extended: true }));
     this.app.use(express.json());
+    this.app.use(helmet());
+    this.app.use(compression());
+    this.app.use(morgan("combined", { stream: this.accessLogStream }));
   }
 
   private routes(): void {
@@ -52,6 +60,12 @@ class App {
     dotenv.config();
     console.log("Environment variables loaded");
     console.warn("Warning: Ensure sensitive info is properly handled");
+  }
+  private setupLogging(): void {
+    this.accessLogStream = fs.createWriteStream(
+      path.join(__dirname, "access.log"),
+      { flags: "a" }
+    );
   }
 }
 

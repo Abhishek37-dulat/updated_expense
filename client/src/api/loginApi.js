@@ -13,9 +13,25 @@ export const SignIn = async (data) => {
 
 export const Register = async (data) => {
   try {
-    return await axios.post(`${urls.auth.signup}`, JSON.stringify(data), {
-      headers: { "Content-Type": "application/json" },
-      withCredentials: true,
+    return await axios.post(`${urls.auth.signup}`, data);
+  } catch (err) {
+    return { status: 400, message: err.response?.data?.message };
+  }
+};
+
+export const VerifyMe = async (data) => {
+  try {
+    console.log(data);
+    return await axios.put(`${urls.auth.verify}/${data}`);
+  } catch (err) {
+    return { status: 400, message: err.response?.data?.message };
+  }
+};
+
+export const PremiumUser = async (data) => {
+  try {
+    return await axios.get(`${urls.auth.premium}`, {
+      headers: { Authorization: data },
     });
   } catch (err) {
     return { status: 400, message: err.response?.data?.message };

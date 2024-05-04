@@ -19,6 +19,8 @@ const mainSlice = createSlice({
         loginResponse: payload.response,
       };
     },
+    userPremium: (state) => state,
+    userVerified: (state) => state,
     authorizeUser: (state) => state,
     registerUser: (state) => state,
     updateAuthSuccessStatus(state, { payload }) {
@@ -42,6 +44,8 @@ export const {
   authorizeUser,
   registerUser,
   updateAuthLoading,
+  userVerified,
+  userPremium,
 } = mainSlice.actions;
 
 export default mainSlice.reducer;
